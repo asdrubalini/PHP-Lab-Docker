@@ -32,15 +32,15 @@ RUN docker-php-ext-configure imap \
 RUN docker-php-ext-install imap
 
 RUN docker-php-ext-configure zip
-
 RUN docker-php-ext-install zip
 
 RUN docker-php-ext-configure intl
 RUN docker-php-ext-install intl
 
-RUN docker-php-ext-install pdo_mysql
 RUN docker-php-ext-install exif
 RUN docker-php-ext-install fileinfo
+
+RUN docker-php-ext-install mysqli
 
 RUN pecl install xdebug
 
