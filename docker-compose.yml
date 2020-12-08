@@ -39,7 +39,7 @@ services:
             - 'MYSQL_USER=${MYSQL_USER}'
             - 'MYSQL_PASSWORD=${MYSQL_PASSWORD}'
         volumes:
-            - './mariadb_data:/var/lib/mysql/'
+            - mariadb-data:/var/lib/mysql/
         networks:
             - lab
     
@@ -58,7 +58,20 @@ services:
             - '8080:80'
         networks:
             - lab
+    
+    redis:
+        image: redis:alpine
+        container_name: lab-redis
+        depends_on:
+            - php
+        networks:
+            - lab
+        volumes:
+            - redis-data:/var/lib/redis/
 
+volumes:
+    mariadb-data:
+    redis-data:
 
 networks:
     lab:

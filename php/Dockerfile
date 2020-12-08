@@ -18,7 +18,8 @@ RUN apt-get install -y \
     gnupg2 \
     libpq-dev \
     libpq5 \
-    libz-dev
+    libz-dev \
+    vim
 
 RUN docker-php-ext-configure gd \
     --with-webp=/usr/include/ \
@@ -44,8 +45,18 @@ RUN docker-php-ext-install mysqli
 
 RUN pecl install xdebug
 
+RUN pecl install -o -f redis
+RUN docker-php-ext-enable redis
+
 RUN curl --silent --show-error https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 ENV COMPOSER_ALLOW_SUPERUSER 1
+
+RUN useradd -ms /bin/bash dev
+
+RUN chown -R dev:dev /var/www/html/
+
+USER dev
+WORKDIR /home/dev/
 
 WORKDIR /var/www/html/
