@@ -1,4 +1,6 @@
-FROM php:7.4-fpm
+FROM php:8.0.2-fpm
+
+ADD php.ini /usr/local/etc/php/conf.d/php.ini
 
 RUN apt-get update -y
 RUN apt-get install -y \
@@ -19,7 +21,8 @@ RUN apt-get install -y \
     libpq-dev \
     libpq5 \
     libz-dev \
-    vim
+    vim \
+    npm
 
 RUN docker-php-ext-configure gd \
     --with-webp=/usr/include/ \
@@ -43,6 +46,8 @@ RUN docker-php-ext-install fileinfo
 
 RUN docker-php-ext-install mysqli
 
+RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql
+
 RUN pecl install xdebug
 
 RUN pecl install -o -f redis
@@ -55,6 +60,9 @@ ENV COMPOSER_ALLOW_SUPERUSER 1
 RUN useradd -ms /bin/bash dev
 
 RUN chown -R dev:dev /var/www/html/
+
+ENV TZ=Europe/Rome
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 USER dev
 WORKDIR /home/dev/

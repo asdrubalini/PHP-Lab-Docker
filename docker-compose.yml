@@ -7,8 +7,6 @@ services:
             context: ./php
         networks:
             - lab
-        depends_on:
-            - mariadb
         volumes:
             - ./php/src:/var/www/html/
             - ./php/www.conf:/usr/local/etc/php-fpm.d/www.conf
@@ -78,4 +76,4 @@ networks:
         driver: bridge
         ipam:
             config:
-                - subnet: 10.0.2.0/24
+                - subnet: 10.0.4.0/24
