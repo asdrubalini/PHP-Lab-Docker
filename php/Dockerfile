@@ -21,8 +21,7 @@ RUN apt-get install -y \
     libpq-dev \
     libpq5 \
     libz-dev \
-    vim \
-    npm
+    vim
 
 RUN docker-php-ext-configure gd \
     --with-webp=/usr/include/ \
@@ -63,6 +62,10 @@ RUN chown -R dev:dev /var/www/html/
 
 ENV TZ=Europe/Rome
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+RUN curl -fsSL https://deb.nodesource.com/setup_15.x | bash -
+RUN apt install nodejs -y
+RUN npm install -g npm
 
 USER dev
 WORKDIR /home/dev/
