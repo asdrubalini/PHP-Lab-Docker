@@ -1,0 +1,14 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Build image
+
+# Controls when the action will run. 
+on: push
+
+jobs:
+  docker-build:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build the stack
+        run: docker-compose build
