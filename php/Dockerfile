@@ -43,9 +43,7 @@ RUN docker-php-ext-install intl
 RUN docker-php-ext-install exif
 RUN docker-php-ext-install fileinfo
 
-RUN docker-php-ext-install mysqli
-
-RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql
+RUN docker-php-ext-install pdo pdo_pgsql
 
 RUN pecl install xdebug
 
