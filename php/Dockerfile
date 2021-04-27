@@ -47,9 +47,6 @@ RUN docker-php-ext-install pdo pdo_pgsql
 
 RUN pecl install xdebug
 
-RUN pecl install -o -f redis
-RUN docker-php-ext-enable redis
-
 RUN curl --silent --show-error https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 ENV COMPOSER_ALLOW_SUPERUSER 1
