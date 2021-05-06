@@ -56,16 +56,6 @@ services:
             - '8080:80'
         networks:
             - lab
-    
-    redis:
-        image: redis:alpine
-        container_name: lab-redis
-        depends_on:
-            - php
-        networks:
-            - lab
-        volumes:
-            - redis-data:/var/lib/redis/
 
 volumes:
     mariadb-data:
