@@ -27,23 +27,23 @@ RUN docker-php-ext-configure gd \
     --with-webp=/usr/include/ \
     --with-freetype=/usr/include/ \
     --with-jpeg=/usr/include/
-RUN docker-php-ext-install gd
+RUN docker-php-ext-install -j$(nproc) gd
 
 RUN docker-php-ext-configure imap \
     --with-kerberos \
     --with-imap-ssl
-RUN docker-php-ext-install imap
+RUN docker-php-ext-install -j$(nproc) imap
 
 RUN docker-php-ext-configure zip
-RUN docker-php-ext-install zip
+RUN docker-php-ext-install -j$(nproc) zip
 
 RUN docker-php-ext-configure intl
-RUN docker-php-ext-install intl
+RUN docker-php-ext-install -j$(nproc) intl
 
 RUN docker-php-ext-install exif
-RUN docker-php-ext-install fileinfo
+RUN docker-php-ext-install -j$(nproc) fileinfo
 
-RUN docker-php-ext-install pdo pdo_pgsql
+RUN docker-php-ext-install -j$(nproc) pdo pdo_pgsql
 
 RUN pecl install xdebug
 
@@ -53,12 +53,12 @@ RUN docker-php-source extract \
     # igbinary
     && mkdir -p /usr/src/php/ext/igbinary \
     &&  curl -fsSL https://github.com/igbinary/igbinary/archive/$EXT_IGBINARY_VERSION.tar.gz | tar xvz -C /usr/src/php/ext/igbinary --strip 1 \
-    && docker-php-ext-install igbinary \
+    && docker-php-ext-install -j$(nproc) igbinary \
     # redis
     && mkdir -p /usr/src/php/ext/redis \
     && curl -fsSL https://github.com/phpredis/phpredis/archive/$EXT_REDIS_VERSION.tar.gz | tar xvz -C /usr/src/php/ext/redis --strip 1 \
     && docker-php-ext-configure redis --enable-redis-igbinary \
-    && docker-php-ext-install redis \
+    && docker-php-ext-install -j$(nproc) redis \
     # cleanup
     && docker-php-source delete
 
