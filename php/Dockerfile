@@ -1,68 +1,48 @@
-FROM php:8.0.2-fpm
+FROM php:8.0.5-fpm-alpine
 
-ADD php.ini /usr/local/etc/php/conf.d/php.ini
-
-RUN apt-get update -y
-RUN apt-get install -y \
-    git \
-    libzip-dev \
-    libc-client-dev \
-    libkrb5-dev \
-    libpng-dev \
-    libjpeg-dev \
+RUN apk update \
+    && apk add --no-cache git vim \
+    && apk add --no-cache --virtual .build-deps \
+    gcc \
+    g++ \
+    make \
     libwebp-dev \
-    libfreetype6-dev \
-    libkrb5-dev \
-    libicu-dev \
-    zlib1g-dev \
-    zip \
-    build-essential \
-    gnupg2 \
-    libpq-dev \
-    libpq5 \
-    libz-dev \
-    vim
+    freetype-dev \
+    jpeg-dev \
+    imap-dev \
+    openssl-dev \
+    libzip-dev \
+    icu-dev \
+    autoconf \
+    && apk add --no-cache postgresql-dev
 
 RUN docker-php-ext-configure gd \
     --with-webp=/usr/include/ \
     --with-freetype=/usr/include/ \
-    --with-jpeg=/usr/include/
-RUN docker-php-ext-install gd
+    --with-jpeg=/usr/include/ \
+    && docker-php-ext-install -j$(nproc) gd
 
-RUN docker-php-ext-configure imap \
-    --with-kerberos \
-    --with-imap-ssl
-RUN docker-php-ext-install imap
+RUN docker-php-ext-configure zip \
+    && docker-php-ext-install -j$(nproc) zip
 
-RUN docker-php-ext-configure zip
-RUN docker-php-ext-install zip
+RUN docker-php-ext-configure intl \
+    && docker-php-ext-install -j$(nproc) intl
 
-RUN docker-php-ext-configure intl
-RUN docker-php-ext-install intl
+RUN docker-php-ext-install exif \
+    && docker-php-ext-install -j$(nproc) fileinfo
 
-RUN docker-php-ext-install exif
-RUN docker-php-ext-install fileinfo
+RUN docker-php-ext-install -j$(nproc) pdo pdo_pgsql
 
-RUN docker-php-ext-install pdo pdo_pgsql
+RUN yes | pecl install xdebug \
+    && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
+    && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini \
+    && echo "xdebug.remote_autostart=off" >> /usr/local/etc/php/conf.d/xdebug.ini
 
-RUN pecl install xdebug
+# Cleanup libs
+RUN apk del --no-cache .build-deps
 
-RUN curl --silent --show-error https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-ENV COMPOSER_ALLOW_SUPERUSER 1
-
-RUN useradd -ms /bin/bash dev
-
-RUN chown -R dev:dev /var/www/html/
-
-ENV TZ=Europe/Rome
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-
-RUN curl -fsSL https://deb.nodesource.com/setup_15.x | bash -
-RUN apt install nodejs -y
-RUN npm install -g npm
+RUN adduser -S dev \
+    && chown -R dev /var/www/html/
 
 USER dev
-WORKDIR /home/dev/
-
 WORKDIR /var/www/html/
