@@ -59,7 +59,6 @@ services:
 
 volumes:
     mariadb-data:
-    redis-data:
 
 networks:
     lab:
