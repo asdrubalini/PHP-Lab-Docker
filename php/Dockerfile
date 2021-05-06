@@ -27,25 +27,23 @@ RUN docker-php-ext-configure gd \
     --with-webp=/usr/include/ \
     --with-freetype=/usr/include/ \
     --with-jpeg=/usr/include/
-RUN docker-php-ext-install gd
+RUN docker-php-ext-install -j$(nproc) gd
 
 RUN docker-php-ext-configure imap \
     --with-kerberos \
     --with-imap-ssl
-RUN docker-php-ext-install imap
+RUN docker-php-ext-install -j$(nproc) imap
 
 RUN docker-php-ext-configure zip
-RUN docker-php-ext-install zip
+RUN docker-php-ext-install -j$(nproc) zip
 
 RUN docker-php-ext-configure intl
-RUN docker-php-ext-install intl
+RUN docker-php-ext-install -j$(nproc) intl
 
 RUN docker-php-ext-install exif
-RUN docker-php-ext-install fileinfo
+RUN docker-php-ext-install -j$(nproc) fileinfo
 
-RUN docker-php-ext-install mysqli
-
-RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql
+RUN docker-php-ext-install -j$(nproc) pdo pdo_mysql
 
 RUN yes | pecl install xdebug \
     && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
