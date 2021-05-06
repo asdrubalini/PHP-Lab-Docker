@@ -45,7 +45,10 @@ RUN docker-php-ext-install -j$(nproc) fileinfo
 
 RUN docker-php-ext-install -j$(nproc) pdo pdo_pgsql
 
-RUN pecl install xdebug
+RUN yes | pecl install xdebug \
+    && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
+    && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini \
+    && echo "xdebug.remote_autostart=off" >> /usr/local/etc/php/conf.d/xdebug.ini
 
 ENV EXT_REDIS_VERSION=5.3.4 EXT_IGBINARY_VERSION=3.2.2
 
