@@ -8,8 +8,8 @@ services:
         networks:
             - lab
         volumes:
-            - ./php/src:/var/www/html/
-            - ./php/www.conf:/usr/local/etc/php-fpm.d/www.conf
+            - './php/src:/var/www/html/'
+            - './php/www.conf:/usr/local/etc/php-fpm.d/www.conf'
     
     nginx:
         image: nginx:alpine
@@ -22,22 +22,22 @@ services:
             - 80:80
             - 443:443
         volumes:
-            - ./php/src:/var/www/html/
-            - ./nginx/conf.d/:/etc/nginx/conf.d/
+            - './php/src:/var/www/html/'
+            - './nginx/conf.d/:/etc/nginx/conf.d/'
     
     mariadb:
-        image: mariadb
+        image: mariadb:10.6.0-focal
         container_name: lab-mariadb
         environment:
-            - PUID=1000
-            - PGID=1000
-            - TZ=Europe/Rome
+            - 'PUID=1000'
+            - 'PGID=1000'
+            - 'TZ=Europe/Rome'
             - 'MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}'
             - 'MYSQL_DATABASE=${MYSQL_DATABASE}'
             - 'MYSQL_USER=${MYSQL_USER}'
             - 'MYSQL_PASSWORD=${MYSQL_PASSWORD}'
         volumes:
-            - mariadb-data:/var/lib/mysql/
+            - 'mariadb-data:/var/lib/mysql/'
         networks:
             - lab
     
@@ -47,9 +47,9 @@ services:
         depends_on:
             - mariadb
         environment:
-            - PMA_ARBITRARY=1
-            - PMA_HOST=mariadb
-            - PMA_PORT=3306
+            - 'PMA_ARBITRARY=1'
+            - 'PMA_HOST=mariadb'
+            - 'PMA_PORT=3306'
             - 'MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}'
             - 'MYSQL_USERNAME=${MYSQL_USER}'
         ports:
